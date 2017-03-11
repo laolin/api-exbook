@@ -136,7 +136,7 @@ class class_exbook{
    *    fid
    *  
    *  返回:
-   *    0 or 1 表示有无更新
+   *    1 or 0 表示有无更新
    */
   public static function draft_delete( ) {
     $r=self::userVerify();
@@ -161,7 +161,7 @@ class class_exbook{
    *    fid
    *  
    *  返回:
-   *    0 or 1 表示有无更新
+   *    1 or 0 表示有无更新
    */
   public static function draft_undelete( ) {
     $r=self::userVerify();
@@ -190,7 +190,7 @@ class class_exbook{
    *    其他要更新的字段 : 详见self::__data_all()函数
    *  
    *  返回:
-   *    fid
+   *    1 or 0 表示有无更新
    *  
    */
   public static function draft_update( ) {
@@ -220,7 +220,7 @@ class class_exbook{
    *    fid
    *  
    *  返回:
-   *    
+   *    1 or 0 表示有无更新
    */
   public static function draft_publish( ) {
     $r=self::userVerify();
