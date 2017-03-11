@@ -66,10 +66,10 @@ class class_exbook{
     $uid=API::INP('uid');    
     $fid=API::INP('fid');
     $r=self::__feed_get($uid,$fid);
-    if(API::is_error($r)){
-      return $r;
-    }
-    return API::data($r);
+    //if(API::is_error($r)){
+    //  return $r;
+    //}
+    return $r;
   }
 
   /**
@@ -364,7 +364,7 @@ class class_exbook{
     $data['update_at']=time();
     $r=$db->update($tblname, $data,
       ['and'=>['fid'=>$fid],'LIMIT'=>1]);
-    return $r;
+    return API::data($r);
   }
   // ---D 删除
   static function __feed_delete( $fid ) {
