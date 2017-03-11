@@ -369,8 +369,10 @@ class class_exbook{
     if(!$r) {
       return API::msg(200002,"fid $fid not exist");
     }
-    if($r['uid']!=$uid) {
-      return API::msg(200003,"fid $fid is not belongs to uid $uid");
+    
+    //草稿只允许自己看
+    if($type=='draft' && $r['uid']!=$uid) {
+      return API::msg(200003,"draft $fid is not belongs to uid $uid");
     }
     if($r['flag']!=$type) {
       return API::msg(202011,"fid $fid is not $type");
