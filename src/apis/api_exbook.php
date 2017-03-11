@@ -58,29 +58,16 @@ class class_exbook{
    *  返回:
    *    各字段
    */
-  public static function draft_get( $include_del =false) {
+  public static function draft_get( ) {
     $r=self::userVerify();
     if(!$r)
       return API::msg(202001,'error userVerify');
     
     $uid=API::INP('uid');    
     $fid=API::INP('fid');
-    if(!$fid) {
-      return API::msg(202005,"fid required");
-    }
-    $r=self::__feed_get($fid);
-    if(!$r) {
-      return API::msg(202002,"fid $fid not exist");
-    }
-    if($r['flag']!='draft') {
-      return API::msg(202003,"fid $fid is not a draft");
-    }
-    if($r['uid']!=$uid) {
-      return API::msg(202006,"fid $fid is not belongs to uid $uid");
-    }
-    
-    if( !$include_del && $r['del']) {
-      return API::msg(202004,"fid $fid was deleted yet");
+    $r=self::__feed_get($uid,$fid);
+    if(API::is_error($r)){
+      return $r;
     }
     return API::data($r);
   }
@@ -108,7 +95,7 @@ class class_exbook{
     return API::data($r);
   }
 
-    /**
+  /**
    *  API:
    *    /exbook/draft_get_deleted
    *    自动按uid查找一个已删除的draft
@@ -143,12 +130,13 @@ class class_exbook{
     if(!$r)
       return API::msg(202001,'error userVerify');
     
+    $uid=API::INP('uid');    
+    $fid=API::INP('fid');
     //要确保fid是对应一个存在的数据
-    $r=self::draft_get( );
+    $r=self::__feed_get($uid,$fid);
     if(API::is_error($r)){
       return $r;
     }
-    $fid=API::INP('fid');    
     $r=self::__feed_delete( $fid );
     return API::data($r);
   }
@@ -168,13 +156,14 @@ class class_exbook{
     if(!$r)
       return API::msg(202001,'error userVerify');
     
+    $uid=API::INP('uid');    
+    $fid=API::INP('fid');
     //要确保fid是对应一个存在的数据
-    $r=self::draft_get( true ); //true 表示可以是已删除的
+    $r=self::__feed_get($uid,$fid,true ); //true 表示可以是已删除的
     if(API::is_error($r)){
       return $r;
     }
     
-    $fid=API::INP('fid');    
     if(!$r['data']['del'])
       return API::msg(203001,"fid $fid was normal");
     $r=self::__feed_undelete( $fid );
@@ -202,7 +191,7 @@ class class_exbook{
     $fid=API::INP('fid');
     
     //要确保fid是对应一个存在的数据
-    $r=self::draft_get( );
+    $r=self::__feed_get($uid,$fid);
     if(API::is_error($r)){
       return $r;
     }
@@ -227,14 +216,14 @@ class class_exbook{
     if(!$r)
       return API::msg(202001,'error userVerify');
 
+    $uid=API::INP('uid');    
+    $fid=API::INP('fid');
     //要确保fid是对应一个存在的数据
-    $r=self::draft_get( );
+    $r=self::__feed_get($uid,$fid);
     if(API::is_error($r)){
       return $r;
     }
     
-    $fid=API::INP('fid');
-
     $r=self::__draft_publish($fid );
     return API::data($r);
   }
@@ -341,12 +330,31 @@ class class_exbook{
   // C--- 不提供创建 feed 的接口，使用草稿的发布功能创建 feed
   
   // -R-- 获取
-  static function __feed_get( $fid ) {
+  static function __feed_get( $uid, $fid, $include_del=false ) {
+    if(!$fid) {
+      return API::msg(200001,"fid required");
+    }
     $db=api_g('db');
     $tblname=self::__table_name('eb_feed');
     $r=$db->get($tblname,
       ['fid','uid','flag','del','content','pic1','pic2','pic3','pic4','pic5','pic6','pic7','pic8','pic9','create_at','update_at','grade','course_id','tags','anonymous'],
       ['and'=>['fid'=>$fid]]);
+      
+      
+      
+    if(!$r) {
+      return API::msg(200002,"fid $fid not exist");
+    }
+    if($r['flag']!='draft') {
+      return API::msg(202003,"fid $fid is not a draft");
+    }
+    if($r['uid']!=$uid) {
+      return API::msg(200004,"fid $fid is not belongs to uid $uid");
+    }
+    
+    if( !$include_del && $r['del']) {
+      return API::msg(200005,"fid $fid was deleted yet");
+    }
     return $r;
   }
   // --U- 更新
