@@ -18,7 +18,7 @@ class class_eb_common{
     if(!$r)
       return API::msg(1001,'error userVerify');
     $cfg=[];
-    $cfg['grade-list']=[
+    $cfg['gradeList']=[
       0=>'不限',
       1=>'一年级',
       2=>'二年级',
@@ -27,7 +27,7 @@ class class_eb_common{
       5=>'五年级',
       6=>'六年级'
     ];
-    $cfg['course-list']=[
+    $cfg['courseList']=[
       1=>'语文',
       2=>'数学',
       3=>'英语',
