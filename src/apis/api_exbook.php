@@ -9,8 +9,7 @@ class class_exbook{
     return $res;
   }
   static function userVerify() {
-    return 1;//暂时先不验证用户
-    //return USER::userVerify();
+    return USER::userVerify();
   }
   
   //test
