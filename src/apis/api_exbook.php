@@ -306,8 +306,8 @@ class class_exbook{
       'pic8'=>'',
       'pic9'=>'',
       'update_at'=>time(),
-      'grade'=>'',
-      'course_id'=>'1',
+      'grade'=>'0',
+      'course'=>'0',
       'tags'=>'',
       'anonymous'=>'1'
     ];
