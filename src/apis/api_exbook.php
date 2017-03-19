@@ -269,15 +269,7 @@ class class_exbook{
   static function __data_all( ) {
     $data=[];
     self::__data_val('content',$data);
-    self::__data_val('pic1',$data);
-    self::__data_val('pic2',$data);
-    self::__data_val('pic3',$data);
-    self::__data_val('pic4',$data);
-    self::__data_val('pic5',$data);
-    self::__data_val('pic6',$data);
-    self::__data_val('pic7',$data);
-    self::__data_val('pic8',$data);
-    self::__data_val('pic9',$data);
+    self::__data_val('pics',$data);
     self::__data_val('grade',$data);
     self::__data_val('course',$data);
     self::__data_val('tags',$data);
@@ -296,15 +288,7 @@ class class_exbook{
       'flag'=>'draft',
       'del'=>0,
       'content'=>'',
-      'pic1'=>'',
-      'pic2'=>'',
-      'pic3'=>'',
-      'pic4'=>'',
-      'pic5'=>'',
-      'pic6'=>'',
-      'pic7'=>'',
-      'pic8'=>'',
-      'pic9'=>'',
+      'pics'=>'',
       'update_at'=>time(),
       'grade'=>'0',
       'course'=>'0',
@@ -322,7 +306,7 @@ class class_exbook{
     $db=api_g('db');
     $tblname=self::__table_name('eb_feed');
     $r=$db->get($tblname,
-      ['fid','uid','flag','del','content','pic1','pic2','pic3','pic4','pic5','pic6','pic7','pic8','pic9','create_at','update_at','grade','course','tags','anonymous'],
+      ['fid','uid','flag','del','content','pics','create_at','update_at','grade','course','tags','anonymous'],
       ['and'=>['uid'=>$uid,'flag'=>'draft','del'=>0]]);
     
     return $r;
@@ -333,7 +317,7 @@ class class_exbook{
     $db=api_g('db');
     $tblname=self::__table_name('eb_feed');
     $r=$db->get($tblname,
-      ['fid','uid','flag','del','content','pic1','pic2','pic3','pic4','pic5','pic6','pic7','pic8','pic9','create_at','update_at','grade','course','tags','anonymous'],
+      ['fid','uid','flag','del','content','pics','create_at','update_at','grade','course','tags','anonymous'],
       ['and'=>['uid'=>$uid,'flag'=>'draft','del'=>1]]);
     
     return $r;
@@ -360,7 +344,7 @@ class class_exbook{
     $db=api_g('db');
     $tblname=self::__table_name('eb_feed');
     $r=$db->get($tblname,
-      ['fid','uid','flag','del','content','pic1','pic2','pic3','pic4','pic5','pic6','pic7','pic8','pic9','create_at','update_at','grade','course','tags','anonymous'],
+      ['fid','uid','flag','del','content','pics','create_at','update_at','grade','course','tags','anonymous'],
       ['and'=>['fid'=>$fid]]);
       
       
