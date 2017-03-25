@@ -249,7 +249,26 @@ class class_exbook{
     $r=self::__feed_get($uid,$fid,'publish');
     return $r;
   }
-  
+ 
+  /**
+   *  API:
+   *    /exbook/feed_list
+   *  输入: 
+   *    uid
+   *  
+   *  返回:
+   *    各字段
+   */
+  public static function feed_list( ) {
+    $r=self::userVerify();
+    if(!$r)
+      return API::msg(202001,'error userVerify');
+    
+    $uid=API::INP('uid');    
+    $r=self::__feed_list($uid,'publish');
+    return $r;
+  }
+ 
   
   //MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
   //===================================================================
@@ -329,22 +348,25 @@ class class_exbook{
 
   //发布 【草稿】
   static function __draft_publish( $fid ) {
-    return self::__feed_update($fid,['flag'=>'publish']);
+    return self::__feed_update($fid,['flag'=>'publish','publish_at'=>time()]);
   }
   
   
   //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+  static function __feed_columns() {
+    return ['fid','uid','flag','del','content','pics','publish_at','update_at','grade','course','tags','anonymous'];
+  }
   // C--- 不提供创建 feed 的接口，使用草稿的发布功能创建 feed
   
   // -R-- 获取
-  static function __feed_get( $uid, $fid, $type='piblish',$include_del=false ) {
+  static function __feed_get( $uid, $fid, $type='publish',$include_del=false ) {
     if(!$fid) {
       return API::msg(200001,"fid required");
     }
     $db=api_g('db');
     $tblname=self::__table_name('eb_feed');
     $r=$db->get($tblname,
-      ['fid','uid','flag','del','content','pics','create_at','update_at','grade','course','tags','anonymous'],
+      self::__feed_columns(),
       ['and'=>['fid'=>$fid]]);
       
       
@@ -365,11 +387,52 @@ class class_exbook{
     }
     return API::data($r);
   }
+  
+  // -R-- 获取
+  static function __feed_list( $uid, $type='publish',$include_del=false ) {
+    $db=api_g('db');
+    $tblname=self::__table_name('eb_feed');
+    
+    $andArray=[];
+    $tik=0;
+    $and=['flag'=>$type];
+    $andArray["and#t$tik"]=$and;
+    
+
+    $and_DEL=false;
+    if($include_del=='only') {
+      $and_DEL=['del'=>1];
+    } else if( ! $include_del) {
+      $and_DEL=['del'=>0];
+    }
+    if($and_DEL) {
+      $tik++;
+      $andArray["and#t$tik"]=$and_DEL;
+    }
+    
+    
+    $count=20;
+    
+    $where=["LIMIT" => $count , "ORDER" => ["publish_at DESC", "update_at DESC"]] ;
+    if(count($andArray))
+      $where['and'] = $andArray ;
+
+
+    $r=$db->select($tblname,self::__feed_columns(),$where);
+      
+      
+    //var_dump($db);
+    if(!$r) {
+      return API::msg(10,"nothing");
+    }
+    
+    return API::data($r);
+  }
+
   // --U- 更新
   static function __feed_update( $fid, $data ) {
     $db=api_g('db');
     $tblname=self::__table_name('eb_feed');
-    $data['update_at']=time();
     $r=$db->update($tblname, $data,
       ['and'=>['fid'=>$fid],'LIMIT'=>1]);
     return $r;
