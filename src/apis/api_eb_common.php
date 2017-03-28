@@ -19,7 +19,7 @@ class class_eb_common{
       return API::msg(1001,'error userVerify');
     $cfg=[];
     $cfg['gradeList']=[
-      'all'=>'不限',
+      'all'=>'各年级',
       'x1'=>'一年级',
       'x2'=>'二年级',
       'x3'=>'三年级',
@@ -31,7 +31,7 @@ class class_eb_common{
       'yu'=>'语文',
       'shu'=>'数学',
       'ying'=>'英语',
-      'other'=>'其他'
+      'other'=>'其他科目'
     ];
     return API::data($cfg);
   }
