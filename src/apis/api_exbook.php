@@ -395,6 +395,21 @@ class class_exbook{
     
     $andArray=[];
     $tik=0;
+    
+    $before=API::INP('before');
+    if($before) {
+      $tik++;
+      $andArray["and#t$tik"]=['publish_at[<]'=>intval($before)];
+    }
+    $after=API::INP('after');
+    if($after) {
+      $tik++;
+      $andArray["and#t$tik"]=['publish_at[>]'=>intval($after)];
+    }
+    
+    
+    
+    $tik++;
     $and=['flag'=>$type];
     $andArray["and#t$tik"]=$and;
     
@@ -411,7 +426,10 @@ class class_exbook{
     }
     
     
-    $count=20;
+    $count=intval(API::INP('count'));
+    if($count==0)$count=20;
+    else if($count<2)$count=20;
+    else if($count>200)$count=200;
     
     $where=["LIMIT" => $count , "ORDER" => ["publish_at DESC", "update_at DESC"]] ;
     if(count($andArray))
