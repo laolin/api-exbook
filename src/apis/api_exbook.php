@@ -315,7 +315,7 @@ class class_exbook{
       'anonymous'=>'1'
     ];
     $r=$db->insert($tblname,$data );
-    if(!r)return false;
+    if(!$r)return false;
     $data['fid']=$r;
     return $data;
   }
