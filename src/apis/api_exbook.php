@@ -396,15 +396,15 @@ class class_exbook{
     $andArray=[];
     $tik=0;
     
-    $before=API::INP('before');
-    if($before) {
+    $oldmore=API::INP('oldmore');
+    if($oldmore) {
       $tik++;
-      $andArray["and#t$tik"]=['publish_at[<]'=>intval($before)];
+      $andArray["and#t$tik"]=['publish_at[<]'=>intval($oldmore)];
     }
-    $after=API::INP('after');
-    if($after) {
+    $newmore=API::INP('newmore');
+    if($newmore) {
       $tik++;
-      $andArray["and#t$tik"]=['publish_at[>]'=>intval($after)];
+      $andArray["and#t$tik"]=['publish_at[>]'=>intval($newmore)];
     }
     
     
