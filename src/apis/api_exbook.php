@@ -1,7 +1,19 @@
 <?php
 // ================================
-/*
-*/
+/**
+ *  errcode:
+ *  
+ *  以下编号和客户端代码相关
+ *  202001 error userVerify
+ *  202002 发布内容无效
+ *  202003 获取内容结果为空
+ *  
+ *  以下编号目前和客户端代码不相关
+ *  2021xx feed get err
+ *  202201 undelete err
+ *  
+ */
+
 
 class class_exbook{
   public static function main( $para1,$para2) {
@@ -16,7 +28,7 @@ class class_exbook{
   public static function test( ) {
     $r=self::userVerify();
     if(!$r)
-      return API::msg(1001,'error userVerify');
+      return API::msg(202001,'error userVerify');
     return API::data('Test passed.');
   }
   
@@ -164,7 +176,7 @@ class class_exbook{
     }
     
     if(!$r['data']['del'])
-      return API::msg(203001,"fid $fid was normal");
+      return API::msg(202201,"fid $fid was normal");
     $r=self::__feed_undelete( $fid );
     return API::data($r);
   }
@@ -222,7 +234,10 @@ class class_exbook{
     if(API::is_error($r)){
       return $r;
     }
-    
+    $err=self::__feed_validate($r['data']);
+    if($err){
+      return API::msg(202002,$err);
+    }
     $r=self::__draft_publish($fid );
     return API::data($r);
   }
@@ -361,7 +376,7 @@ class class_exbook{
   // -R-- 获取
   static function __feed_get( $uid, $fid, $type='publish',$include_del=false ) {
     if(!$fid) {
-      return API::msg(200001,"fid required");
+      return API::msg(202101,"fid required");
     }
     $db=api_g('db');
     $tblname=self::__table_name('eb_feed');
@@ -372,18 +387,18 @@ class class_exbook{
       
       
     if(!$r) {
-      return API::msg(200002,"fid $fid not exist");
+      return API::msg(202102,"fid $fid not exist");
     }
     
     //草稿只允许自己看
     if($type=='draft' && $r['uid']!=$uid) {
-      return API::msg(200003,"draft $fid is not belongs to uid $uid");
+      return API::msg(202103,"draft $fid is not belongs to uid $uid");
     }
     if($r['flag']!=$type) {
-      return API::msg(202011,"fid $fid is not $type");
+      return API::msg(202104,"fid $fid is not $type");
     }
     if( !$include_del && $r['del']) {
-      return API::msg(200012,"fid $fid was deleted yet");
+      return API::msg(202105,"fid $fid was deleted yet");
     }
     return API::data($r);
   }
@@ -441,7 +456,7 @@ class class_exbook{
       
     //var_dump($db);
     if(!$r) {
-      return API::msg(10,"nothing");
+      return API::msg(202003,"nothing");
     }
     
     return API::data($r);
@@ -467,7 +482,21 @@ class class_exbook{
   }
   
   //QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
-  
+
+  //判断是否有效，主要用于草稿发布为正式feed  
+  static function __feed_validate($feed) {
+    $err='';
+    if( !$feed['content'] && !$feed['pics']) {
+      $err.='发布内容是空的。';
+    }
+    if( !$feed['grade']) {
+      $err.='未选择年级。';
+    }
+    if( !$feed['course']) {
+      $err.='未选择科目。';
+    }
+    return $err;
+  }
   // 撤销删除
   static function __feed_undelete( $fid ) {
     return self::__feed_update($fid,['del'=>0]);
