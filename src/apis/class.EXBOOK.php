@@ -147,12 +147,12 @@ class EXBOOK {
     $oldmore=API::INP('oldmore');
     if($oldmore) {
       $tik++;
-      $andArray["and#t$tik"]=['publish_at[<]'=>intval($oldmore)];
+      $andArray["and#t$tik"]=['fid[<]'=>intval($oldmore)];
     }
     $newmore=API::INP('newmore');
     if($newmore) {
       $tik++;
-      $andArray["and#t$tik"]=['publish_at[>]'=>intval($newmore)];
+      $andArray["and#t$tik"]=['fid[>]'=>intval($newmore)];
     }
     
     
