@@ -82,27 +82,25 @@ class EBCOMMENT {
     $andArray=[];
     $tik=0;
     
-    $oldmore=API::INP('oldmore');
-    if($oldmore) {
+    
+    $fids= API::INP('fids');
+    if($fids) {
+      $fids=explode(',',API::INP('fids'));
       $tik++;
-      $andArray["and#t$tik"]=['cid[<]'=>intval($oldmore)];
+      $andArray["and#t$tik"]=['fid'=>$fids];
     }
-    $newmore=API::INP('newmore');
-    if($newmore) {
-      $tik++;
-      $andArray["and#t$tik"]=['cid[>]'=>intval($newmore)];
-    }
-    
-    
-    
 
-    
     $count=intval(API::INP('count'));
     if($count==0)$count=20;
     else if($count<2)$count=20;
     else if($count>200)$count=200;
+
+    $page=intval(API::INP('page'));
+    if($page<=0)$page=1;
     
-    $where=["LIMIT" => $count , "ORDER" => ["cid DESC"]] ;
+    $lmt=[($page-1)*$count,$count];
+    
+    $where=["LIMIT" => $lmt , "ORDER" => ["cid DESC"]] ;
     if(count($andArray))
       $where['and'] = $andArray ;
 
