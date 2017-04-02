@@ -363,7 +363,26 @@ class class_exbook{
 
   //发布 【草稿】
   static function __draft_publish( $fid ) {
-    return self::__feed_update($fid,['flag'=>'publish','publish_at'=>time()]);
+    $db=api_g('db');
+    $tblname=self::__table_name('eb_feed');
+
+    //发布的算法：
+    //1,复制一份草稿为 正式 publish
+    //2,然后把草稿文字内容清空（科目等保留）
+    $sth = $db->pdo->prepare("INSERT INTO $tblname 
+      (`content`,`pics`,`grade`,`course`,`anonymous`,
+        `uid`,`flag`,`del`,`publish_at`)
+      SELECT `content`,`pics`,`grade`,`course`,`anonymous`,
+        :uid ,'publish','0', :now
+      FROM $tblname 
+      WHERE fid = $fid" );
+ 
+    $sth->bindParam(':uid', API::INP('uid'), PDO::PARAM_INT);
+    $sth->bindParam(':now', time(), PDO::PARAM_INT);
+     
+    $sth->execute();
+    
+    return self::__feed_update($fid,['content'=>'','pics'=>'']);
   }
   
   
