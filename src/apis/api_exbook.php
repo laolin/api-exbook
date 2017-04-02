@@ -14,6 +14,7 @@
  *  
  */
 
+require_once  dirname( __FILE__ ) . '/class.EBCONFIG.php';
 require_once  dirname( __FILE__ ) . '/class.EXBOOK.php';
 
 class class_exbook{
@@ -32,9 +33,10 @@ class class_exbook{
       return API::msg(202001,'error userVerify');
     return API::data('Test passed.');
   }
+  public static function config( ) {
+    return API::data(EBCONFIG::config());
+  }  
   
-  
-
 
   /**
    *  API:

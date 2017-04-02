@@ -3,20 +3,11 @@
 /*
 */
 
-class class_eb_common{
-  public static function main( $para1,$para2) {
-    $res=API::data(['time'=>time().' - exbook is ready.']);
-    return $res;
-  }
-  static function userVerify() {
-    return USER::userVerify();
-  }
+class EBCONFIG{
+  
   
   //先静态写死，以后改数据库
   public static function config( ) {
-    $r=self::userVerify();
-    if(!$r)
-      return API::msg(1001,'error userVerify');
     $cfg=[];
     $cfg['gradeList']=[
       'all'=>'各年级',
@@ -33,6 +24,6 @@ class class_eb_common{
       'ying'=>'英语',
       'other'=>'其他科目'
     ];
-    return API::data($cfg);
+    return $cfg;
   }
 }
