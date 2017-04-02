@@ -53,9 +53,9 @@ class class_exbook{
     if(!$r)
       return API::msg(202001,'error userVerify');
     $uid=API::INP('uid');    
-    $r=EXBOOK::__draft_get_by_uid($uid);
+    $r=EXBOOK::draft_get_by_uid($uid);
     if(!$r) {
-      $r=EXBOOK::__draft_create($uid);
+      $r=EXBOOK::draft_create($uid);
     }
     return API::data($r);
   }
@@ -77,7 +77,7 @@ class class_exbook{
     
     $uid=API::INP('uid');    
     $fid=API::INP('fid');
-    $r=EXBOOK::__feed_get($uid,$fid,'draft');
+    $r=EXBOOK::feed_get($uid,$fid,'draft');
     //if(API::is_error($r)){
     //  return $r;
     //}
@@ -100,9 +100,9 @@ class class_exbook{
       return API::msg(202001,'error userVerify');
     
     $uid=API::INP('uid');    
-    $r=EXBOOK::__draft_get_by_uid($uid);
+    $r=EXBOOK::draft_get_by_uid($uid);
     if(!$r) {
-      $r=EXBOOK::__draft_create($uid);
+      $r=EXBOOK::draft_create($uid);
     }
     return API::data($r);
   }
@@ -123,7 +123,7 @@ class class_exbook{
       return API::msg(202001,'error userVerify');
     
     $uid=API::INP('uid');    
-    $r=EXBOOK::__draft_get_deleted_by_uid($uid);
+    $r=EXBOOK::draft_get_deleted_by_uid($uid);
     return API::data($r);
   }
 
@@ -145,11 +145,11 @@ class class_exbook{
     $uid=API::INP('uid');    
     $fid=API::INP('fid');
     //要确保fid是对应一个存在的数据
-    $r=EXBOOK::__feed_get($uid,$fid,'draft');
+    $r=EXBOOK::feed_get($uid,$fid,'draft');
     if(API::is_error($r)){
       return $r;
     }
-    $r=EXBOOK::__feed_delete( $fid );
+    $r=EXBOOK::feed_delete( $fid );
     return API::data($r);
   }
 
@@ -171,14 +171,14 @@ class class_exbook{
     $uid=API::INP('uid');    
     $fid=API::INP('fid');
     //要确保fid是对应一个存在的数据
-    $r=EXBOOK::__feed_get($uid,$fid,'draft',true ); //true 表示可以是已删除的
+    $r=EXBOOK::feed_get($uid,$fid,'draft',true ); //true 表示可以是已删除的
     if(API::is_error($r)){
       return $r;
     }
     
     if(!$r['data']['del'])
       return API::msg(202201,"fid $fid was normal");
-    $r=EXBOOK::__feed_undelete( $fid );
+    $r=EXBOOK::feed_undelete( $fid );
     return API::data($r);
   }
   
@@ -188,7 +188,7 @@ class class_exbook{
    *  输入: 
    *    uid
    *    fid
-   *    其他要更新的字段 : EXBOOK::__data_all()函数
+   *    其他要更新的字段 : EXBOOK::data_all()函数
    *  
    *  返回:
    *    1 or 0 表示有无更新
@@ -203,13 +203,13 @@ class class_exbook{
     $fid=API::INP('fid');
     
     //要确保fid是对应一个存在的数据
-    $r=EXBOOK::__feed_get($uid,$fid,'draft');
+    $r=EXBOOK::feed_get($uid,$fid,'draft');
     if(API::is_error($r)){
       return $r;
     }
 
-    $data=EXBOOK::__data_all();
-    $r=EXBOOK:: __feed_update($fid,$data);
+    $data=EXBOOK::data_all();
+    $r=EXBOOK::feed_update($fid,$data);
     return API::data($r);
   }
 
@@ -231,15 +231,15 @@ class class_exbook{
     $uid=API::INP('uid');    
     $fid=API::INP('fid');
     //要确保fid是对应一个存在的数据
-    $r=EXBOOK::__feed_get($uid,$fid,'draft');
+    $r=EXBOOK::feed_get($uid,$fid,'draft');
     if(API::is_error($r)){
       return $r;
     }
-    $err=EXBOOK::__feed_validate($r['data']);
+    $err=EXBOOK::feed_validate($r['data']);
     if($err){
       return API::msg(202002,$err);
     }
-    $r=EXBOOK::__draft_publish($fid );
+    $r=EXBOOK::draft_publish($fid );
     return API::data($r);
   }
   
@@ -262,7 +262,7 @@ class class_exbook{
     
     $uid=API::INP('uid');    
     $fid=API::INP('fid');
-    $r=EXBOOK::__feed_get($uid,$fid,'publish');
+    $r=EXBOOK::feed_get($uid,$fid,'publish');
     return $r;
   }
  
@@ -281,7 +281,7 @@ class class_exbook{
       return API::msg(202001,'error userVerify');
     
     $uid=API::INP('uid');    
-    $r=EXBOOK::__feed_list($uid,'publish');
+    $r=EXBOOK::feed_list($uid,'publish');
     return $r;
   }
  

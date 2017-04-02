@@ -3,34 +3,34 @@
 class EXBOOK { 
   
   //获取 数据表名
-  static function __table_name( $item ) {
+  static function table_name( $item ) {
     $prefix=api_g("api-table-prefix");
     return $prefix.$item;
   }
   
-  static function __data_val( $key, & $data ) {
+  static function data_val( $key, & $data ) {
     if(false === API::INP($key)) return;
     $data[$key]=API::INP($key);
   }
   
   //TODO: 有效性检查
-  static function __data_all( ) {
+  static function data_all( ) {
     $data=[];
-    self::__data_val('content',$data);
-    self::__data_val('pics',$data);
-    self::__data_val('grade',$data);
-    self::__data_val('course',$data);
-    self::__data_val('tags',$data);
-    self::__data_val('anonymous',$data);
+    self::data_val('content',$data);
+    self::data_val('pics',$data);
+    self::data_val('grade',$data);
+    self::data_val('course',$data);
+    self::data_val('tags',$data);
+    self::data_val('anonymous',$data);
     return $data;
   }
   
   //-----------------------------------------------
   
   // C--- 新建  【草稿】
-  static function __draft_create( $uid ) {
+  static function draft_create( $uid ) {
     $db=api_g('db');
-    $tblname=self::__table_name('eb_feed');
+    $tblname=self::table_name('eb_feed');
     $data=[
       'uid'=>$uid,
       'flag'=>'draft',
@@ -50,9 +50,9 @@ class EXBOOK {
   }
 
   // -R-- 获取 uid 的最新【草稿】
-  static function __draft_get_by_uid( $uid ) {
+  static function draft_get_by_uid( $uid ) {
     $db=api_g('db');
-    $tblname=self::__table_name('eb_feed');
+    $tblname=self::table_name('eb_feed');
     $r=$db->get($tblname,
       ['fid','uid','flag','del','content','pics','create_at','update_at','grade','course','tags','anonymous'],
       ['and'=>['uid'=>$uid,'flag'=>'draft','del'=>0]]);
@@ -61,9 +61,9 @@ class EXBOOK {
   }
   
   // -R-- 获取 uid 的最新【已删除草稿】
-  static function __draft_get_deleted_by_uid( $uid ) {
+  static function draft_get_deleted_by_uid( $uid ) {
     $db=api_g('db');
-    $tblname=self::__table_name('eb_feed');
+    $tblname=self::table_name('eb_feed');
     $r=$db->get($tblname,
       ['fid','uid','flag','del','content','pics','create_at','update_at','grade','course','tags','anonymous'],
       ['and'=>['uid'=>$uid,'flag'=>'draft','del'=>1]]);
@@ -76,9 +76,9 @@ class EXBOOK {
   // ---D 删除 草稿 同  feed
 
   //发布 【草稿】
-  static function __draft_publish( $fid ) {
+  static function draft_publish( $fid ) {
     $db=api_g('db');
-    $tblname=self::__table_name('eb_feed');
+    $tblname=self::table_name('eb_feed');
 
     //发布的算法：
     //1,复制一份草稿为 正式 publish
@@ -96,25 +96,25 @@ class EXBOOK {
      
     $sth->execute();
     
-    return self::__feed_update($fid,['content'=>'','pics'=>'']);
+    return self::feed_update($fid,['content'=>'','pics'=>'']);
   }
   
   
   //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-  static function __feed_columns() {
+  static function feed_columns() {
     return ['fid','uid','flag','del','content','pics','publish_at','update_at','grade','course','tags','anonymous'];
   }
   // C--- 不提供创建 feed 的接口，使用草稿的发布功能创建 feed
   
   // -R-- 获取
-  static function __feed_get( $uid, $fid, $type='publish',$include_del=false ) {
+  static function feed_get( $uid, $fid, $type='publish',$include_del=false ) {
     if(!$fid) {
       return API::msg(202101,"fid required");
     }
     $db=api_g('db');
-    $tblname=self::__table_name('eb_feed');
+    $tblname=self::table_name('eb_feed');
     $r=$db->get($tblname,
-      self::__feed_columns(),
+      self::feed_columns(),
       ['and'=>['fid'=>$fid]]);
       
       
@@ -137,9 +137,9 @@ class EXBOOK {
   }
   
   // -R-- 获取
-  static function __feed_list( $uid, $type='publish',$include_del=false ) {
+  static function feed_list( $uid, $type='publish',$include_del=false ) {
     $db=api_g('db');
-    $tblname=self::__table_name('eb_feed');
+    $tblname=self::table_name('eb_feed');
     
     $andArray=[];
     $tik=0;
@@ -184,7 +184,7 @@ class EXBOOK {
       $where['and'] = $andArray ;
 
 
-    $r=$db->select($tblname,self::__feed_columns(),$where);
+    $r=$db->select($tblname,self::feed_columns(),$where);
       
       
     //var_dump($db);
@@ -196,18 +196,18 @@ class EXBOOK {
   }
 
   // --U- 更新
-  static function __feed_update( $fid, $data ) {
+  static function feed_update( $fid, $data ) {
     $db=api_g('db');
-    $tblname=self::__table_name('eb_feed');
+    $tblname=self::table_name('eb_feed');
     $r=$db->update($tblname, $data,
       ['and'=>['fid'=>$fid],'LIMIT'=>1]);
     return $r;
   }
   // ---D 删除
-  static function __feed_delete( $fid ) {
-    return self::__feed_update($fid,['del'=>1]);
+  static function feed_delete( $fid ) {
+    return self::feed_update($fid,['del'=>1]);
     /*$db=api_g('db');
-    $tblname=self::__table_name('eb_feed');
+    $tblname=self::table_name('eb_feed');
     
     $r=$db->delete($tblname, 
       ['and'=>['fid'=>$fid],'LIMIT'=>1]);
@@ -217,7 +217,7 @@ class EXBOOK {
   //QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
 
   //判断是否有效，主要用于草稿发布为正式feed  
-  static function __feed_validate($feed) {
+  static function feed_validate($feed) {
     $err='';
     if( !$feed['content'] && !$feed['pics']) {
       $err.='发布内容是空的。';
@@ -231,11 +231,11 @@ class EXBOOK {
     return $err;
   }
   // 撤销删除
-  static function __feed_undelete( $fid ) {
-    return self::__feed_update($fid,['del'=>0]);
+  static function feed_undelete( $fid ) {
+    return self::feed_update($fid,['del'=>0]);
   }
   // 撤销为草稿
-  static function __feed_to_draft( $fid ) {
-    return self::__feed_update($fid,['flag'=>'draft']);
+  static function feed_to_draft( $fid ) {
+    return self::feed_update($fid,['flag'=>'draft']);
   }
 }
