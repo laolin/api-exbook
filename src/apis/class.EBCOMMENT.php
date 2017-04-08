@@ -47,7 +47,14 @@ class EBCOMMENT {
       $re_cid=API::INP('re_cid');
       $re_uid=API::INP('re_uid');
       $content=API::INP('content');
-    } else {
+    } else { // == like
+      //看是否点过赞
+      $r=$db->get($tblname,self::columns(),
+        ['and'=>['uid'=>$uid,'fid'=>$fid,'ctype'=>'like','mark'=>'0']]);
+      if($r) {
+        return API::msg(203502,'已点过赞');
+      }
+      
       $re_cid='0';
       $re_uid='0';
       $content='';
