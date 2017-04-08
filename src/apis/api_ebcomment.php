@@ -66,6 +66,17 @@ class class_ebcomment {
     $r=EBCOMMENT::li( );
     return $r;
   }
+  /**
+   *  删除评论、点赞 
+   */
+  public static function del(  ) {
+    $r=self::userVerify();
+    if(!$r)
+      return API::msg(202001,'error userVerify');
+    
+    $r=EBCOMMENT::del( );
+    return api::data($r);
+  }
 
 
 }

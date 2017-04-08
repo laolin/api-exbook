@@ -98,6 +98,7 @@ class EBCOMMENT {
     
     $andArray=[];
     $tik=0;
+    $andArray["and#t$tik"]=['mark'=>0];//删除的不要
     
     
     $fids= API::INP('fids');
@@ -155,7 +156,16 @@ class EBCOMMENT {
   }
 
   // ---D 删除
-  static function del( $cid ) {
+  static function del( ) {
+    $uid=API::INP('uid');
+    $fid=API::INP('fid');
+    $cid=API::INP('cid');
+    $ctype=API::INP('ctype');
+
+    $r=self::comment_get($uid, $fid,$ctype,0,$cid);
+    if(!$r) {
+      return API::msg(203502,"$uid can't del $ctype $cid of $fid");
+    }
     return self::update($cid,['mark'=>1]);
   }
   
