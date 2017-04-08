@@ -90,6 +90,18 @@ class EBCOMMENT {
       $andArray["and#t$tik"]=['fid'=>$fids];
     }
 
+
+    $oldmore=API::INP('oldmore');
+    if($oldmore) {
+      $tik++;
+      $andArray["and#t$tik"]=['cid[<]'=>intval($oldmore)];
+    }
+    $newmore=API::INP('newmore');
+    if($newmore) {
+      $tik++;
+      $andArray["and#t$tik"]=['cid[>]'=>intval($newmore)];
+    }
+
     $count=intval(API::INP('count'));
     if($count==0)$count=20;
     else if($count<2)$count=20;
