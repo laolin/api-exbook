@@ -21,6 +21,17 @@ class EBCOMMENT {
     ];
   }
   
+  //获得指定uid,fid,ctype 的评论/点赞数据
+  static function comment_get($uid,$fid,$ctype,  $mark=0, $cid=0) {
+    $and=['and'=>['uid'=>$uid,'fid'=>$fid,'ctype'=>$ctype,'mark'=>$mark]];
+    if($cid) {
+      $and['and']['cid']=$cid;
+    }
+    $db=api_g('db');
+    $tblname=self::table_name();
+    $r=$db->select($tblname,self::columns(),$and);
+    return $r;
+  }  
   // C--- 新建
   /**
    *  $type: `like` | null 
@@ -49,8 +60,7 @@ class EBCOMMENT {
       $content=API::INP('content');
     } else { // == like
       //看是否点过赞
-      $r=$db->get($tblname,self::columns(),
-        ['and'=>['uid'=>$uid,'fid'=>$fid,'ctype'=>'like','mark'=>'0']]);
+      $r=self::comment_get($uid, $fid, 'like');
       if($r) {
         return API::msg(203502,'已点过赞');
       }
