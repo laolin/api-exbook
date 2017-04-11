@@ -286,6 +286,31 @@ class class_exbook{
     $r=EXBOOK::feed_list($uid,'publish');
     return $r;
   }
+  /**
+   *  API:
+   *    /exbook/feed_delete
+   *  输入: 
+   *    uid
+   *    fid
+   *  
+   *  返回:
+   *    1 or 0 表示有无更新
+   */
+  public static function feed_delete( ) {
+    $r=self::userVerify();
+    if(!$r)
+      return API::msg(202001,'error userVerify');
+    
+    $uid=API::INP('uid');    
+    $fid=API::INP('fid');
+    //要确保fid是对应一个存在的数据
+    $r=EXBOOK::feed_get($uid,$fid,'publish');
+    if(API::is_error($r)){
+      return $r;
+    }
+    $r=EXBOOK::feed_delete( $fid );
+    return API::data($r);
+  }
  
 }
 
