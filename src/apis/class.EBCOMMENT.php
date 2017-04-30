@@ -92,7 +92,7 @@ class EBCOMMENT {
 
   
   // -R-- 获取
-  static function li( $uid,$fidArr ) {
+  static function li(  ) {
     $db=api_g('db');
     $tblname=self::table_name();
     
@@ -174,7 +174,7 @@ class EBCOMMENT {
   static function validate( $dat ) {
     $err='';
     if( !$dat['content'] && $dat['ctype']=='comment') {
-      $err.='评论内容是空的。'.$dat['ctype'];
+      $err.='评论内容是空的。';
     }
     // TODO: 验证 're_cid'
     // TODO: 验证 're_uid'
