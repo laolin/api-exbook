@@ -4,6 +4,9 @@
 */
 
 class EBCONFIG{
+  const EB_RIGHTS_USER    = 0x00000001;
+  
+  const EB_RIGHTS_ADMIN   = 0x00010000;
   
   
   //先静态写死，以后改数据库
