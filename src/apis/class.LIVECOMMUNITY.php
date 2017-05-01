@@ -17,7 +17,7 @@ class LIVECOMMUNITY {
     return [
       'id','name','descript',
       'addr','lngE7','latE7',
-      'provice','city','citycode',
+      'province','city','citycode',
       'pics','mark'
     ];
   }
@@ -79,5 +79,59 @@ class LIVECOMMUNITY {
     return API::data($r);;
   }
 
+  
+  // -R-- 获取
+  static function li(  ) {
+    $db=api_g('db');
+    $tblname=self::table_name();
+    
+    $andArray=[];
+    $tik=0;
+    $andArray["and#t$tik"]=['mark'=>''];//非空即为删除的，不要
+    
+    
+    $lnglat= API::INP('lnglat');
+    if($lnglat) {
+      $l_arr=explode(',',$lnglat);
+      if(count($l_arr)>2 &&
+        intval($l_arr[0])>70 && intval($l_arr[0])<140 &&
+        intval($l_arr[1])>3 && intval($l_arr[1])<60
+      ){
+        $lng=intval(1e7*$l_arr[0]);
+        $lat=intval(1e7*$l_arr[1]);
+        $dist=2000;
+        if(count($l_arr)==3) {
+          $dist=intval($l_arr[2]);
+        }
+        if($dist<500)$dist=500;
+        if($dist>5000)$dist=5000;
+        
+        $tik++;
+        // 1米$dist 大致相当于1e-5度，乘1e7后再比，故要再乘以100
+        $andArray["and#t$tik"]=[
+          'lngE7[>]'=>$lng-100*$dist,
+          'lngE7[<]'=>$lng+100*$dist,
+          'latE7[>]'=>$lat-100*$dist,
+          'latE7[<]'=>$lat+100*$dist,
+        ];
+      }
+    }
+
+    $count=200;
+    $page=1;
+    $lmt=[($page-1)*$count,$count];
+    
+    $where=["LIMIT" => $lmt , "ORDER" => ["id DESC"]] ;
+    if(count($andArray))
+      $where['and'] = $andArray ;
+
+    $r=$db->select($tblname,self::columns(),$where);
+    //var_dump($db);
+    if(!$r) {
+      return API::msg(202003,"nothing");
+    }
+    
+    return API::data($r);
+  }
 
 }

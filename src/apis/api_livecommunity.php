@@ -35,5 +35,14 @@ class class_livecommunity{
     $r=LIVECOMMUNITY::create();
     return $r;
   }
+  
+  public static function li( ) {
+    $r=self::userVerify();
+    if(!$r)
+      return API::msg(202001,'error userVerify');
+    
+    $r=LIVECOMMUNITY::li();
+    return $r;
+  }
 }
 
